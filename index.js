@@ -1,34 +1,32 @@
-const fetch = require("node-fetch");
+var express = require('express');
+var app = express();
+const blockchainConnector = require('./blockchainConnector');
 
+app.set('port', (process.env.PORT || 5000))
+app.use(express.static(__dirname + '/public'))
 
-DoIt("your address");
+app.get('/', async function (request, response) {
+  response.send("specify an address {url}/address/{yourNeoAddressHere}");
+})
 
-async function DoIt(address) {
+app.get('/address/:address', async function (request, response) {
 
-    let page = 1;
-    const allClaims = []
-    while (true) {
-        const response = await fetch("https://neoscan.io/api/main_net/v1/get_last_transactions_by_address/" + address + "/" + page);
-        const results = await response.json();
-        const claims = results
-            .filter(x => x.type === "ClaimTransaction")
-            .map(claimTransaction => {
-                return {
-                    gas: claimTransaction.vouts[0].value,
-                    date: new Date(claimTransaction.time * 1000)
-                }
-            })
-        page++
-        if (claims.length === 0){
-            break;
-        } else{
-            claims.forEach(claim => allClaims.push(claim))
-        }
-    }
-    //const allClaimedGas= allClaims.reduce((prev, current) => prev + current.gas, 0);
-    //console.log(allClaimedGas);
+  response.setHeader('Content-Type', 'application/json');
 
-    allClaims.forEach(claim => {
-        console.log(claim.gas + "           " + claim.date.toISOString().replace("T", " ").split(".")[0])
-    })
-}
+  try {
+    const address = request.params.address;
+    const gasClaims = await blockchainConnector.DoIt(address);
+    response.send(gasClaims);
+
+  } catch (e) {
+    console.log("Error fetching gas claims: " + e.message)
+    response.send({
+      text: "there was a problem bro"
+    });
+  }
+})
+
+app.listen(app.get('port'), function () {
+  console.log("Node app is running at localhost:" + app.get('port'))
+})
+

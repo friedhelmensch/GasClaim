@@ -1,14 +1,23 @@
 {
-  "name": "doof",
-  "version": "1.0.0",
-  "description": "",
+  "name": "gas-claim",
+  "version": "0.2.0",
+  "description": "get your claimed gas information",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.1.2"
-  }
+    "express": "^4.13.3",
+    "node-fetch": "^1.7.3"
+  },
+  "engines": {
+    "node": "8.1.4"
+  },
+  "keywords": [
+    "NEO",
+    "GAS",
+    "Blockchain"
+  ],
+  "author": "Friedhelmensch",
+  "license": "MIT"
 }
