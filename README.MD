@@ -1,6 +1,6 @@
-# Tresorticker
+# Gas Claim Information
 
-A barebones Node.js app using [Express 4](http://expressjs.com/) to get all claim transaction for a NEO blockchain address
+A barebones Node.js app using [Express 4](http://expressjs.com/) to get all gas claim transactions for a NEO blockchain address
 
 ## Running Locally
 
@@ -15,7 +15,7 @@ npm start
 
 Your app should now be running on [localhost:5000](http://localhost:5000/).
 
-## Demo live
-[running on now.sh](https://gas-claim-smchvykwge.now.sh)
+## View Online
+[add your neo address to the end of the URL](https://gas-claim-smchvykwge.now.sh)
 
 
