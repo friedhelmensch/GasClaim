@@ -4,7 +4,8 @@
   "description": "get your claimed gas information",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "dependencies": {
     "express": "^4.13.3",
@@ -19,5 +20,8 @@
     "Blockchain"
   ],
   "author": "Friedhelmensch",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  }
 }

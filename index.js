@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+
+const fetch = require("node-fetch");
 const blockchainConnector = require('./blockchainConnector');
 
 app.set('port', (process.env.PORT || 5000))
@@ -15,7 +17,10 @@ app.get('/address/:address', async function (request, response) {
 
   try {
     const address = request.params.address;
-    const gasClaims = await blockchainConnector.DoIt(address);
+
+    const getGasClaims = blockchainConnector.makeGetClaims(fetch);
+    const gasClaims = await getGasClaims(address);
+    
     response.send(gasClaims);
 
   } catch (e) {

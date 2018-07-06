@@ -1,27 +1,48 @@
-const fetch = require("node-fetch");
+exports.makeGetClaims = (fetchTransactions) => {
 
-exports.DoIt = async function (address) {
+    const getClaims = async function (address) {
 
-    let page = 1;
-    const allClaims = []
-    while (true) {
-        const response = await fetch("https://neoscan.io/api/main_net/v1/get_last_transactions_by_address/" + address + "/" + page);
-        const results = await response.json();
-        const claims = results
-            .filter(x => x.type === "ClaimTransaction")
-            .map(claimTransaction => {
-                return {
-                    gas: claimTransaction.vouts[0].value,
-                    date: new Date(claimTransaction.time * 1000)
-                }
-            })
-        page++
-        if (claims.length === 0){
-            break;
-        } else{
-            claims.forEach(claim => allClaims.push(claim))
-        }
+        const allTransactions = await fetchTransactions(address);
+
+        const claims = exports.mapTransactions(allTransactions);
+
+        return claims;
     }
 
-    return allClaims;
+    return getClaims;
+}
+
+exports.mapTransactions = (allTransactions) => {
+
+    return allTransactions
+        .filter(x => x.type === "ClaimTransaction")
+        .map(claimTransaction => {
+            return {
+                gas: claimTransaction.vouts[0].value,
+                date: new Date(claimTransaction.time * 1000)
+            }
+        })
+}
+
+exports.makeFetchTransactions = (fetch) => {
+
+    const fetchTransactions = async (address) => {
+        let page = 1;
+        const allTransactions = []
+
+        while (true) {
+            const response = await fetch("https://neoscan.io/api/main_net/v1/get_last_transactions_by_address/" + address + "/" + page);
+            const allTransactionsForPage = await response.json();
+            page++
+            if (allTransactionsForPage.length === 0) {
+                break;
+            } else {
+                allTransactionsForPage.forEach(transaction => allTransactions.push(transaction))
+            }
+        }
+
+        return allTransactions;
+    }
+    return fetchTransactions;
+
 }
