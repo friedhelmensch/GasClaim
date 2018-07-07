@@ -3,7 +3,6 @@ exports.makeGetClaims = (fetchTransactions) => {
     const getClaims = async function (address) {
 
         const allTransactions = await fetchTransactions(address);
-
         const claims = exports.extractClaimTransactions(allTransactions);
 
         return claims;
@@ -26,23 +25,17 @@ exports.extractClaimTransactions = (allTransactions) => {
 
 exports.makeFetchTransactions = (fetchTransactionsForPage) => {
 
-    const fetchTransactions = async (address) => {
-        let page = 1;
-        const allTransactions = []
-
-        while (true) {
-            const allTransactionsForPage = await fetchTransactionsForPage(address, page);
-            page++
-            if (allTransactionsForPage.length === 0) {
-                break;
-            } else {
-                allTransactionsForPage.forEach(transaction => allTransactions.push(transaction))
-            }
+    const fetchTransactionsRecursive = async (address, page, transactions) => {
+        if (!transactions) transactions = [];
+        if (!page) page = 1;
+        const transactionsForPage = await fetchTransactionsForPage(address, page);
+        if (transactionsForPage.length == 0) {
+            return transactions;
+        } else {
+            return fetchTransactionsRecursive(address, page + 1, transactions.concat(transactionsForPage))
         }
-
-        return allTransactions;
     }
-    return fetchTransactions;
+    return fetchTransactionsRecursive;
 }
 
 exports.makeFetchTransactionsForPage = (fetch) => {

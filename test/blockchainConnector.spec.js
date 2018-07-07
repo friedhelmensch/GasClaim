@@ -6,32 +6,40 @@ describe("blockchainConnector", () => {
     describe("getClaims", () => {
         it('should return 10 claims', async function () {
 
-            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage());
+            const pages = 5;
+            const transactionsPerPage = 4;
+            const mod = 3;
+
+            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(pages, transactionsPerPage));
             const getClaims = blockchainConnector.makeGetClaims(fetchTransactions);
 
             const claims = await getClaims("ThisDoesNotMatterHere")
-            assert.equal(claims.length, 10);
+            assert.equal(claims.length, pages * transactionsPerPage / 2);
         })
     })
     describe("fetchTransactions", () => {
         it('should return 10 transactions', async function () {
 
-            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage());
+            const pages = 5;
+            const transactionsPerPage = 4;
+            const mod = 3;
+
+
+            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(pages, transactionsPerPage));
             const transactions = await fetchTransactions("MyNeoAddress");
-            assert.equal(transactions.length, 10);
+            assert.equal(transactions.length, pages * transactionsPerPage);
 
         });
     })
 })
 
-
-function createMockFetchTransactionsForPage(){
+function createMockFetchTransactionsForPage(maxPages, transactionsPerPage) {
 
     return (address, page) => {
-        if (page < 5) {
+        if (page <= maxPages) {
             transactions = [];
-            for (let i = 0; i < page; i++) {
-                transactions.push(createTransaction(page * (i + 1)))
+            for (let i = 0; i < transactionsPerPage; i++) {
+                transactions.push(createTransaction(i % 2 === 0))
             }
             return transactions
         } else {
@@ -40,11 +48,10 @@ function createMockFetchTransactionsForPage(){
     };
 }
 
-function createTransaction(value) {
-    //this is just nonsense to get semi random numbers
+function createTransaction(isClaim) {
     return {
-        vouts: [{ value: value }],
-        time: 1530954129 + value,
-        type : "ClaimTransaction"
+        vouts: [{ value: 150 }],
+        time: 1530954129 + 157,
+        type: isClaim === true ? "ClaimTransaction" : "NoClaim"
     }
 }
