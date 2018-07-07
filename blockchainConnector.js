@@ -4,7 +4,7 @@ exports.makeGetClaims = (fetchTransactions) => {
 
         const allTransactions = await fetchTransactions(address);
 
-        const claims = exports.mapTransactions(allTransactions);
+        const claims = exports.extractClaimTransactions(allTransactions);
 
         return claims;
     }
@@ -12,7 +12,7 @@ exports.makeGetClaims = (fetchTransactions) => {
     return getClaims;
 }
 
-exports.mapTransactions = (allTransactions) => {
+exports.extractClaimTransactions = (allTransactions) => {
 
     return allTransactions
         .filter(x => x.type === "ClaimTransaction")
@@ -24,15 +24,14 @@ exports.mapTransactions = (allTransactions) => {
         })
 }
 
-exports.makeFetchTransactions = (fetch) => {
+exports.makeFetchTransactions = (fetchTransactionsForPage) => {
 
     const fetchTransactions = async (address) => {
         let page = 1;
         const allTransactions = []
 
         while (true) {
-            const response = await fetch("https://neoscan.io/api/main_net/v1/get_last_transactions_by_address/" + address + "/" + page);
-            const allTransactionsForPage = await response.json();
+            const allTransactionsForPage = await fetchTransactionsForPage(address, page);
             page++
             if (allTransactionsForPage.length === 0) {
                 break;
@@ -44,5 +43,14 @@ exports.makeFetchTransactions = (fetch) => {
         return allTransactions;
     }
     return fetchTransactions;
+}
 
+exports.makeFetchTransactionsForPage = (fetch) => {
+
+    const fetchTransactionsForPage = async (address, page) => {
+        const response = await fetch("https://neoscan.io/api/main_net/v1/get_last_transactions_by_address/" + address + "/" + page);
+        const allTransactionsForPage = await response.json();
+        return allTransactionsForPage;
+    }
+    return fetchTransactionsForPage
 }
