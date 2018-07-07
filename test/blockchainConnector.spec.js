@@ -6,45 +6,41 @@ describe("blockchainConnector", () => {
     describe("getClaims", () => {
         it('should return 10 claims', async function () {
 
-            const pages = 5;
-            const transactionsPerPage = 4;
-            const mod = 3;
+            const transactionPages = [];
+            transactionPages.push([createTransaction(true), createTransaction(true)])
+            transactionPages.push([createTransaction(false), createTransaction(true)])
 
-            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(pages, transactionsPerPage));
+            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(transactionPages));
             const getClaims = blockchainConnector.makeGetClaims(fetchTransactions);
 
             const claims = await getClaims("ThisDoesNotMatterHere")
-            assert.equal(claims.length, pages * transactionsPerPage / 2);
+            assert.equal(claims.length, 3);
         })
     })
     describe("fetchTransactions", () => {
         it('should return 10 transactions', async function () {
 
-            const pages = 5;
-            const transactionsPerPage = 4;
-            const mod = 3;
+            const transactionPages = [];
+            transactionPages.push([createTransaction(true), createTransaction(true)])
+            transactionPages.push([createTransaction(false), createTransaction(true)])
 
 
-            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(pages, transactionsPerPage));
+            const fetchTransactions = blockchainConnector.makeFetchTransactions(createMockFetchTransactionsForPage(transactionPages));
             const transactions = await fetchTransactions("MyNeoAddress");
-            assert.equal(transactions.length, pages * transactionsPerPage);
+            assert.equal(transactions.length, 4);
 
         });
     })
 })
 
-function createMockFetchTransactionsForPage(maxPages, transactionsPerPage) {
+function createMockFetchTransactionsForPage(pages) {
 
-    return (address, page) => {
-        if (page <= maxPages) {
-            transactions = [];
-            for (let i = 0; i < transactionsPerPage; i++) {
-                transactions.push(createTransaction(i % 2 === 0))
-            }
-            return transactions
-        } else {
-            return [];
+    return (address, pageNumber) => {
+        if (pageNumber <= pages.length) {
+            const page = pages[pageNumber - 1];
+            return page;
         }
+        return [];
     };
 }
 
