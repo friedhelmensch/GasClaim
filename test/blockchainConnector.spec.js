@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 
 describe("blockchainConnector", () => {
     describe("getClaims", () => {
-        it('should return 10 claims', async function () {
+        it('should return 3 claims', async function () {
 
             const transactionPages = [];
             transactionPages.push([createTransaction(true), createTransaction(true)])
@@ -18,7 +18,7 @@ describe("blockchainConnector", () => {
         })
     })
     describe("fetchTransactions", () => {
-        it('should return 10 transactions', async function () {
+        it('should return 4 transactions', async function () {
 
             const transactionPages = [];
             transactionPages.push([createTransaction(true), createTransaction(true)])
