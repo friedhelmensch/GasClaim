@@ -3,7 +3,18 @@ const assert = require('assert');
 const fetch = require("node-fetch");
 
 describe("blockchainConnector", () => {
-    describe("getClaims", () => {
+    describe("getAllGasSenders", () => {
+        it('return all', async function () {
+
+            const fetchTransactionForPage = blockchainConnector.makeFetchTransactionsForPage(fetch);
+            const fetchTransactions = blockchainConnector.makeFetchTransactions(fetchTransactionForPage);
+            const getAllGasSenders = blockchainConnector.makeGetAllGasSenders(fetchTransactions);
+
+            const allGasSenders = await getAllGasSenders("___")
+            console.log(allGasSenders);
+        })
+    })
+    /*describe("getClaims", () => {
         it('should return 3 claims', async function () {
 
             const transactionPages = [];
@@ -30,7 +41,7 @@ describe("blockchainConnector", () => {
             assert.equal(transactions.length, 4);
 
         });
-    })
+    })*/
 })
 
 function createMockFetchTransactionsForPage(pages) {
