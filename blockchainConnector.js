@@ -1,18 +1,12 @@
-exports.makeGetAllGasSenders = (fetchTransactions) => {
-
-    const getAllGasSenders = async function (address) {
-
-        const allTransactions = await fetchTransactions(address);
-        const allContractTransactions = allTransactions.filter(x => x.type === "ContractTransaction")
-        const allGasTransactions = allContractTransactions.filter(x => x.vouts[0].asset === '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7')
-        const allGasSenders = allGasTransactions.map(x => x.vouts[0].address_hash)
-        return allGasSenders;
-    }
-
-    return getAllGasSenders;
-}
+const fetch = require("node-fetch");
 
 exports.makeGetClaims = (fetchTransactions) => {
+
+    //no dependecy given so we construct our own fetchTransactions function
+    if(!fetchTransactions){
+        const fetchTransactionForPage = exports.makeFetchTransactionsForPage(fetch);
+        fetchTransactions = exports.makeFetchTransactions(fetchTransactionForPage);
+    }
 
     const getClaims = async function (address) {
 
@@ -60,4 +54,18 @@ exports.makeFetchTransactionsForPage = (fetch) => {
         return allTransactionsForPage;
     }
     return fetchTransactionsForPage
+}
+
+exports.makeGetAllGasSenders = (fetchTransactions) => {
+
+    const getAllGasSenders = async function (address) {
+
+        const allTransactions = await fetchTransactions(address);
+        const allContractTransactions = allTransactions.filter(x => x.type === "ContractTransaction")
+        const allGasTransactions = allContractTransactions.filter(x => x.vouts[0].asset === '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7')
+        const allGasSenders = allGasTransactions.map(x => x.vouts[0].address_hash)
+        return allGasSenders;
+    }
+
+    return getAllGasSenders;
 }
