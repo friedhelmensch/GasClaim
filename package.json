@@ -19,9 +19,13 @@
     "GAS",
     "Blockchain"
   ],
-  "author": "Friedhelmensch",
+  "author": "friedhelmensch",
   "license": "MIT",
   "devDependencies": {
     "mocha": "^5.2.0"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/friedhelmensch/GasClaim.git"
   }
 }

@@ -3,7 +3,7 @@ var app = express();
 
 const blockchainConnector = require('./blockchainConnector');
 
-app.set('port', (process.env.PORT || 5000))
+app.set('port', 8080)
 app.use(express.static(__dirname + '/public'))
 
 app.get('/', async function (request, response) {
